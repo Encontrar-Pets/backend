@@ -1,5 +1,5 @@
 import { FastifyInstance } from 'fastify';
-import { SHELTERS } from '../../mocks';
+import { TAGS } from '../../mocks';
 
 module.exports = async function (fastify: FastifyInstance) {
   fastify.route({
@@ -7,7 +7,7 @@ module.exports = async function (fastify: FastifyInstance) {
     url: '/',
     handler: function (request, reply) {
       // mock data section
-      reply.send(SHELTERS);
+      reply.send(TAGS);
       // mock data section
     }
   });
