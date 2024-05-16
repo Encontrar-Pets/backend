@@ -146,3 +146,16 @@ export const SHELTERS = [
   { id: 2, name: 'Abrigo 2', phone: '2222222222', address: 'Avenida 2' },
   { id: 3, name: 'Abrigo 3', phone: '3333333333', address: 'Avenida 3' }
 ];
+
+export const TAGS = [
+  { id: 1, description: 'caramelo' },
+  { id: 2, description: 'branco e preto' },
+  { id: 3, description: 'medrosa' },
+  { id: 4, description: 'medio porte' },
+  { id: 5, description: '1-2 anos' },
+  { id: 6, description: 'preto' },
+  { id: 7, description: 'macho' },
+  { id: 8, description: '0-1 ano' },
+  { id: 9, description: 'tricolor' },
+  { id: 10, description: 'fêmea' }
+];
