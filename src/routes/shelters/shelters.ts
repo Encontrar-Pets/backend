@@ -7,6 +7,7 @@ module.exports = async function (fastify: FastifyInstance) {
     url: '/',
     handler: function (request, reply) {
       // mock data section
+      // orm here to get shelters from database
       reply.send(SHELTERS);
       // mock data section
     }

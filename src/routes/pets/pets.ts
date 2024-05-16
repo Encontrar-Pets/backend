@@ -7,24 +7,19 @@ module.exports = async function (fastify: FastifyInstance) {
     url: '/',
     handler: function (request, reply) {
       const shelter: number = request.query?.shelter_id;
-      var tags: Array<string> | undefined = undefined;
-      if (request.query?.tags) {
-        tags = request.query?.tags.split(',');
+      var tag_ids: Array<number> | undefined = undefined;
+      if (request.query?.tag_ids) {
+        tag_ids = request.query?.tag_ids.split(',');
       }
-      console.log({ shelter });
 
       // mock data section
+      // orm here to get pets from database
       var filtered_pets = PETS.filter((el) => el.shelter_id == shelter);
 
-      if (tags) {
-        // tags = tags.split(',');
-        console.log({ tags });
-        console.log(filtered_pets.length);
-        tags.forEach((t) => {
-          console.log(filtered_pets.length);
+      if (tag_ids) {
+        tag_ids.forEach((t) => {
           filtered_pets = filtered_pets.filter((el1) => {
-            console.log(el1.name);
-            return el1?.pet_tag_description.indexOf(t) == 0;
+            return el1?.pet_tag_ids.indexOf(Number(t)) >= 0;
           });
         });
       }
