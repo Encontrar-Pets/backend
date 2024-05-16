@@ -1,5 +1,4 @@
 import { FastifyInstance } from 'fastify';
-import { PETS } from '../../../mocks';
 
 module.exports = async function (fastify: FastifyInstance) {
   fastify.route({
@@ -11,6 +10,7 @@ module.exports = async function (fastify: FastifyInstance) {
       const phone = request.body?.phone;
       const address = request.body?.address;
       const terms_accepted = request.body?.terms_accepted;
+      const image = request.body?.image;
 
       // mock data section
 
