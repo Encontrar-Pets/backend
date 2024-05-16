@@ -1,0 +1,15 @@
+{
+    "verbose": false,
+    "ignore": [
+      "node_modules"
+    ],
+    "execMap": {
+      "ts": "ts-node -r tsconfig-paths/register  --transpile-only"
+    },
+    "watch": [
+      "src/*",
+      ".env",
+      "package.json"
+    ],
+    "ext": "ts,js,json"
+  }
