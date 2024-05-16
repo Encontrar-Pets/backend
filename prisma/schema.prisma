@@ -1,0 +1,80 @@
+datasource db {
+  provider = "postgresql"
+  url = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model temp_home {
+  id String @id @default(cuid())
+  name String
+  phone String
+  address Json
+  security_data Json
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  pets   pets[] 
+}
+
+model applicant_owner {
+  id String @id @default(cuid())
+  name String
+  phone String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  pets   pets[] 
+}
+
+model characteristics {
+  id String @id @default(cuid())
+  name String
+  description String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  pets   pets[]
+}
+
+model pets {
+  id String @id @default(cuid())
+  name String
+  description String
+  type String
+  temp_home_id String?
+  applicant_owner_id String?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  temp_home   temp_home? @relation(fields: [temp_home_id], references: [id])
+  applicant_owner   applicant_owner? @relation(fields: [applicant_owner_id], references: [id])
+  characteristics   characteristics[]
+  pet_shelter pet_shelter[]
+}
+
+model pet_shelter {
+  id String @id @default(cuid())
+  pet_id String
+  shelter_id String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  pet   pets @relation(fields: [pet_id], references: [id])
+  shelter   shelter @relation(fields: [shelter_id], references: [id])
+}
+
+model shelter {
+  id String @id @default(cuid())
+  name String
+  phone String
+  address Json
+  login String
+  password String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  pet_shelter   pet_shelter[] 
+}
