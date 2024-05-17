@@ -1,7 +1,8 @@
 export enum PetStatus {
   AVAILABLE = 'A',
   PENDING = 'P',
-  RECOVERED = 'R'
+  RECOVERED = 'R',
+  LOST = 'L'
 }
 
 export class PetsDTO {
