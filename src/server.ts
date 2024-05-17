@@ -5,6 +5,8 @@ import path from 'path';
 import AutoLoad from '@fastify/autoload';
 import { RequestListener, ServerResponse } from 'http';
 import { FastifyRequest, FastifyReply } from 'fastify';
+
+import prisma from './utils/prisma';
 import { logger } from './services/logger';
 
 const fastify = require('fastify')({
@@ -54,9 +56,15 @@ fastify.addContentTypeParser(
 fastify
   .listen({ port: 8080 })
   .then(async () => {
+    prisma
+      .$connect()
+      .then(() => {
+        logger.info('Testing DB Connection. OK');
+        prisma.$disconnect();
+      })
+      .catch(() => logger.error("Can't Connect to DB"));
     logger.info(`Server Listening on Port ${process.env.PORT}`);
   })
   .catch((err: Error) => {
-    console.log(err);
-    console.log(err);
+    logger.error(err);
   });
