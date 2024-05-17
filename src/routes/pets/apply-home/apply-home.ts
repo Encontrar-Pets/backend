@@ -6,19 +6,21 @@ module.exports = async function (fastify: FastifyInstance) {
     url: '/',
     handler: function (request, reply) {
       const pet_id = request.body?.pet_id;
-      const owner_name = request.body?.owner_name;
-      const owner_phone = request.body?.owner_phone;
+      const name = request.body?.name;
+      const phone = request.body?.phone;
+      const address = request.body?.address;
+      const terms_accepted = request.body?.terms_accepted;
       const image = request.body?.image;
 
       // mock data section
 
       /* 
-      check if owner not exists in applicant_owner -> phone field
-        insert data in applicant_owner
+      check if home not exists in temp_home -> phone field
+        insert data in temp_home
       else
-        get applicant_owner_id
+        get temp_home_id
 
-      update pets table with applicant_owner_id
+      update pets table with temp_home_id
       */
 
       reply.send({});
