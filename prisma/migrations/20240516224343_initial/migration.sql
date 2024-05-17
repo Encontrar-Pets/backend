@@ -37,6 +37,7 @@ CREATE TABLE "pets" (
     "name" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "type" TEXT NOT NULL,
+    "status" VARCHAR(1) NOT NULL,
     "temp_home_id" TEXT,
     "applicant_owner_id" TEXT,
     "shelter_id" TEXT,

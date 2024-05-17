@@ -42,6 +42,7 @@ model pets {
   name String
   description String
   type String
+  status String @db.VarChar(1)
   temp_home_id String?
   applicant_owner_id String?
   shelter_id String?
