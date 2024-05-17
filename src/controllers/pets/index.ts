@@ -46,10 +46,7 @@ export const applyOwnerHandler = async (
   res: FastifyReply
 ) => {
   try {
-    const pet_id = req.body?.pet_id;
-    const owner_name = req.body?.owner_name;
-    const owner_phone = req.body?.owner_phone;
-    const image = req.body?.image;
+    const { pet_id, owner_name, owner_phone, image } = req.body;
 
     // mock data section
 
@@ -101,6 +98,37 @@ export const applyHomeHandler = async (
 
     res.code(200).send({
       message: 'Applied successfully',
+      data: {}
+    });
+  } catch (err) {
+    logger.error(err);
+    res.code(500).send({
+      message: 'Internal Server Error'
+    });
+  }
+};
+
+export const newPetHandler = async (
+  req: FastifyRequest<{
+    Body: any;
+  }>,
+  res: FastifyReply
+) => {
+  try {
+    const { name, description, type, image, tags_ids, shelter_id } = req.body;
+
+    logger.info({ name, description, type, image, tags_ids, shelter_id });
+    console.log({ name, description, type, image, tags_ids, shelter_id });
+
+    // mock data section
+
+    /* 
+    insert new data in pets
+    insert pet_tagas in pet_tags
+    */
+
+    res.code(200).send({
+      message: 'New pet created successfully',
       data: {}
     });
   } catch (err) {
