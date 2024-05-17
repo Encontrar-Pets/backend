@@ -10,7 +10,10 @@ import fp from 'fastify-plugin';
  */
 module.exports = fp(async function (fastify: FastifyInstance) {
   fastify.register(require('@fastify/cors'), {
-    origin: (origin, callback) => {
+    origin: (
+      origin: string | undefined,
+      callback: (err: Error | null, allow?: boolean) => void
+    ) => {
       callback(null, true);
     },
     credentials: true
