@@ -60,4 +60,17 @@ export class PetsRepository {
             }
         })
     }
+
+    async addTempHome(id: string, temp_home_id: string) {
+        return await this.prisma.pets.update({
+            where: {
+                id
+            },
+            data: {
+                status: PetStatus.TEMP_ALOCATED,
+                temp_home_id: temp_home_id,
+                updated_at: new Date()
+            }
+        })
+    }
 }

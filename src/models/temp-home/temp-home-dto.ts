@@ -5,7 +5,7 @@ export class SecurityData{
     os?: string;
     nat?: string;
 }
-export class TempHome{    
+export class TempHomeDTO{    
     name!: string;
     phone!: string;
     address?: Adress;
