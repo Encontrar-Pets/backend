@@ -1,6 +1,12 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
-import { SHELTERS } from '../../mocks';
 import { logger } from '../../services/logger';
+
+import { ShelterRepository } from '../../models/shelters/shelters-model';
+import prisma from '../../utils/prisma';
+
+import { SHELTERS } from '../../mocks';
+
+const sheltersRepository = new ShelterRepository(prisma);
 
 export const getSheltersHandler = async (
   req: FastifyRequest<{
@@ -9,9 +15,14 @@ export const getSheltersHandler = async (
   res: FastifyReply
 ) => {
   try {
+    // mock data
+    // const data = SHELTERS;
+
+    const data = await sheltersRepository.findAll();
+
     res.code(200).send({
       message: 'Shelters fetched successfully',
-      data: SHELTERS
+      data: data
     });
   } catch (err) {
     logger.error(err);
