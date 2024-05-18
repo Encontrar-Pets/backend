@@ -1,6 +1,12 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
-import { TAGS } from '../../mocks';
 import { logger } from '../../services/logger';
+
+import { TagsRepository } from '../../models/tags/tags-model';
+import prisma from '../../utils/prisma';
+
+import { TAGS } from '../../mocks';
+
+const tagsRepository = new TagsRepository(prisma);
 
 export const getTagsHandler = async (
   req: FastifyRequest<{
@@ -9,9 +15,14 @@ export const getTagsHandler = async (
   res: FastifyReply
 ) => {
   try {
+    // mock data
+    // const data = SHELTERS;
+
+    const data = await tagsRepository.findAll();
+
     res.code(200).send({
       message: 'Tags fetched successfully',
-      data: TAGS
+      data: data
     });
   } catch (err) {
     logger.error(err);

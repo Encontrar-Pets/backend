@@ -11,4 +11,8 @@ export class TagsRepository {
             }
         });
     }
+
+    async findAll() {
+        return await this.prisma.tags.findMany({});
+    }
 }
