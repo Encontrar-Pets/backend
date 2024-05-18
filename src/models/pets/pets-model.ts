@@ -20,6 +20,22 @@ export class PetsRepository {
         });
     }
 
+    async createLostedPet(pet: PetsDTO) {
+        return await this.prisma.pets.create({
+            data: {
+                name: pet.name,
+                description: pet.description,
+                status: PetStatus.LOST,
+                type: pet.type,
+                img_url: pet.img_url,
+                owner_id: pet.owner_id,
+                pet_tags: {
+                    connect: pet.pet_tag_ids ? pet.pet_tag_ids.map((id) => ({ id })) : [],
+                }
+            }
+        });
+    }
+
     async findAllAvailable() {
         return await this.prisma.pets.findMany({
             where: {
@@ -28,10 +44,49 @@ export class PetsRepository {
         });
     }
 
+    async findAllLosted() {
+        return await this.prisma.pets.findMany({
+            where: {
+                status: PetStatus.LOST
+            }
+        });
+    }
+
+    async findAllLostedByTagIds(tags_ids: Array<string>) {
+        return await this.prisma.pets.findMany({
+            where: {
+                status: PetStatus.LOST,
+                pet_tags: {
+                    some: {
+                        id: {
+                            in: tags_ids
+                        }
+                    }
+                }
+            }
+        });
+    }
+
     async findAllByShelter(shelter_id: string) {
         return await this.prisma.pets.findMany({
             where: {
                 shelter_id,
+                status: PetStatus.AVAILABLE
+            }
+        });
+    }
+
+    async findAllByShelterAndTagsIds(shelter_id: string, tags_ids: Array<string>) {
+        return await this.prisma.pets.findMany({
+            where: {
+                shelter_id,
+                pet_tags: {
+                    some: {
+                        id: {
+                            in: tags_ids
+                        }
+                    }
+                },
                 status: PetStatus.AVAILABLE
             }
         });

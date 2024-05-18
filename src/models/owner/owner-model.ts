@@ -1,34 +1,34 @@
 import { PrismaClient } from "@prisma/client";
-import { AplicantOwnerDTO } from "./applicant-owner-dto";
+import { OwnerDTO } from "./owner-dto";
 
-export class AplicantOwnerRepository {
+export class OwnerRepository {
     constructor(private readonly prisma: PrismaClient) { }
 
-    async create(aplicant: AplicantOwnerDTO) {
-        return await this.prisma.applicant_owner.create({
+    async create(owner: OwnerDTO) {
+        return await this.prisma.owners.create({
             data: {
-                name: aplicant.name,
-                phone: aplicant.phone
+                name: owner.name,
+                phone: owner.phone
             }
         });
     }
 
     async findByName(name: string) {
-         return await this.prisma.applicant_owner.findMany({
+         return await this.prisma.owners.findMany({
             where: {
                 name: name
             }
          });       
     }
     async findByPhone(phone: string) {
-         return await this.prisma.applicant_owner.findMany({
+         return await this.prisma.owners.findMany({
             where: {
                 phone: phone
             }
          });       
     }
     async findById(id: string) {
-         return await this.prisma.applicant_owner.findUnique({
+         return await this.prisma.owners.findUnique({
             where: {
                 id: id
             }
