@@ -29,7 +29,7 @@ export class PetsRepository {
         type: pet.type,
         img_url: pet.img_url,
         owner_id: pet.owner_id,
-        pet_tags: {
+        tags: {
           connect: pet.pet_tag_ids ? pet.pet_tag_ids.map((id) => ({ id })) : []
         }
       }
@@ -56,7 +56,7 @@ export class PetsRepository {
     return await this.prisma.pets.findMany({
       where: {
         status: PetStatus.LOST,
-        pet_tags: {
+        tags: {
           some: {
             id: {
               in: tags_ids
@@ -83,7 +83,7 @@ export class PetsRepository {
     return await this.prisma.pets.findMany({
       where: {
         shelter_id,
-        pet_tags: {
+        tags: {
           some: {
             id: {
               in: tags_ids
