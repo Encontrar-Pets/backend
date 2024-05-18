@@ -29,7 +29,7 @@ export const getPetsHandler = async (
     var filtered_pets = [];
     if (req.query.tag_ids) {
       const tag_ids = req.query.tag_ids.split(',');
-      filtered_pets = await petsRepository.findAllByShelterAndTagIds(
+      filtered_pets = await petsRepository.findAllByShelterAndTagsIds(
         shelter_id,
         tag_ids
       );
