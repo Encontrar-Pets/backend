@@ -16,7 +16,7 @@ export const getTagsHandler = async (
 ) => {
   try {
     // mock data
-    // const data = SHELTERS;
+    // const data = TAGS;
 
     const data = await tagsRepository.findAll();
 
