@@ -1,9 +1,23 @@
 import { PrismaClient } from '@prisma/client';
-import { PETS, SHELTERS } from '../src/mocks';
+import { PETS, SHELTERS, TAGS } from '../src/mocks';
 
 const prisma = new PrismaClient();
 
 async function main() {
+  // tags
+  const tags = Array();
+  for (let tag of TAGS) {
+    tags.push({
+      description: tag.description
+    });
+  }
+  const c_tags = await prisma.tags.createManyAndReturn({
+    data: tags
+  });
+  console.log('Added tags');
+  //
+
+  // shelters
   const shelters = Array();
   for (let shelter of SHELTERS) {
     shelters.push({
@@ -14,27 +28,40 @@ async function main() {
       phone: shelter.phone
     });
   }
-  const c_shelters = await prisma.shelter.createManyAndReturn({
+  const c_shelters = await prisma.shelters.createManyAndReturn({
     data: shelters
   });
   console.log('Added shelters');
+  //
 
+  // lost pets
   const lost_pets = new Array();
+  const c_lost_pets = new Array();
   for (let pet of PETS) {
-    lost_pets.push({
-      name: pet.name,
-      description: pet.description,
-      type: pet.description,
-      status: 'A',
-      img_url: pet.image,
-      shelter_id: c_shelters[pet.shelter_id - 1]['id']
-    });
-  }
+    const tag_ids = new Array();
 
-  const c_lost_pets = await prisma.pets.createMany({
-    data: lost_pets
-  });
+    for (let t of pet.pet_tag_ids) {
+      tag_ids.push(c_tags[t]['id']);
+    }
+
+    c_lost_pets.push(
+      await prisma.pets.create({
+        data: {
+          name: pet.name,
+          description: pet.description,
+          type: pet.type,
+          status: 'A',
+          img_url: pet.image,
+          shelter_id: c_shelters[pet.shelter_id - 1]['id'],
+          tags: {
+            connect: tag_ids.map((v) => ({ id: v }))
+          }
+        }
+      })
+    );
+  }
   console.log('Added lost pets');
+  //
 }
 main()
   .then(async () => {

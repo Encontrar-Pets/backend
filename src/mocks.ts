@@ -126,14 +126,24 @@ export const SHELTERS = [
 ];
 
 export const TAGS = [
-  { id: 1, description: 'caramelo' },
-  { id: 2, description: 'branco e preto' },
-  { id: 3, description: 'medrosa' },
-  { id: 4, description: 'medio porte' },
-  { id: 5, description: '1-2 anos' },
-  { id: 6, description: 'preto' },
-  { id: 7, description: 'macho' },
-  { id: 8, description: '0-1 ano' },
-  { id: 9, description: 'tricolor' },
-  { id: 10, description: 'fêmea' }
+  { id: 1, description: 'Caramelo' },
+  { id: 2, description: 'Branco' },
+  { id: 3, description: 'Preto' },
+  { id: 4, description: 'Tricolor' },
+
+  { id: 5, description: 'Porte Pequeno' },
+  { id: 6, description: 'Porte Médio' },
+  { id: 7, description: 'Porte Grande' },
+
+  { id: 8, description: 'Medroso' },
+  { id: 15, description: 'Bravo' },
+  { id: 16, description: 'Arisco' },
+
+  { id: 9, description: 'Filhote' },
+  { id: 10, description: 'Jovem' },
+  { id: 11, description: 'Adulto' },
+  { id: 12, description: 'Idoso' },
+
+  { id: 13, description: 'Macho' },
+  { id: 14, description: 'Fêmea' }
 ];
