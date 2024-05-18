@@ -1,6 +1,15 @@
 import { PrismaClient } from "@prisma/client";
 import { SheltersDTO } from "./shelters-dto";
 
+const defaultSelect = {
+    id: true,
+    name: true,
+    phone: true,
+    address: true,
+    login: false,
+    password: false,
+};
+
 export class ShelterRepository {
     constructor(private readonly prisma: PrismaClient) { }
 
@@ -17,14 +26,14 @@ export class ShelterRepository {
     }
 
     async findAll() {
-        return await this.prisma.shelters.findMany();
+        return await this.prisma.shelters.findMany({
+            select: { ...defaultSelect }
+        });
     }
 
     async findById(id: string) {
         return await this.prisma.shelters.findUnique({
-            select: {
-                password: false,
-            },
+            select: { ...defaultSelect },
             where: {
                 id
             }
@@ -33,9 +42,7 @@ export class ShelterRepository {
 
     async login(login: string, password: string) {
         return await this.prisma.shelters.findFirstOrThrow({
-            select: {
-                password: false,
-            },
+            select: { ...defaultSelect },
             where: {
                 login: login,
                 password: password
