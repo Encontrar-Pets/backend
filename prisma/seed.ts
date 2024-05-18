@@ -41,7 +41,7 @@ async function main() {
     const tag_ids = new Array();
 
     for (let t of pet.pet_tag_ids) {
-      tag_ids.push(c_tags[t]['id']);
+      tag_ids.push(c_tags[t-1]['id']);
     }
 
     c_lost_pets.push(
