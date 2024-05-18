@@ -9,7 +9,7 @@ const petsRepository = new PetsRepository(prisma);
 
 export const getPetsHandler = async (
   req: FastifyRequest<{
-    Querystring: { shelter_id: string; tags_ids?: string };
+    Querystring: { shelter_id: string; tags?: string };
   }>,
   res: FastifyReply
 ) => {
@@ -28,11 +28,11 @@ export const getPetsHandler = async (
 
     // database data
     var filtered_pets = [];
-    if (req.query.tags_ids) {
-      const tags_ids = req.query.tags_ids.split(',');
+    if (req.query.tags) {
+      const tags = req.query.tags.split(',');
       filtered_pets = await petsRepository.findAllByShelterAndTagsIds(
         shelter_id,
-        tags_ids
+        tags
       );
     } else {
       filtered_pets = await petsRepository.findAllByShelter(shelter_id);
@@ -126,10 +126,10 @@ export const newPetHandler = async (
   res: FastifyReply
 ) => {
   try {
-    const { name, description, type, image, tags_ids, shelter_id } = req.body;
+    const { name, description, type, image, tags, shelter_id } = req.body;
 
-    logger.info({ name, description, type, image, tags_ids, shelter_id });
-    console.log({ name, description, type, image, tags_ids, shelter_id });
+    logger.info({ name, description, type, image, tags, shelter_id });
+    console.log({ name, description, type, image, tags, shelter_id });
 
     // mock data section
 

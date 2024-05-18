@@ -80,16 +80,20 @@ export class PetsRepository {
     shelter_id: string,
     tags_ids: Array<string>
   ) {
+    const and_clause = Array();
+    for (let i of tags_ids){
+      and_clause.push({
+        tags: {
+          some:{
+            id: i
+          }
+        }
+      })
+    }
     return await this.prisma.pets.findMany({
       where: {
         shelter_id,
-        tags: {
-          some: {
-            id: {
-              in: tags_ids
-            }
-          }
-        },
+        AND: and_clause,
         status: PetStatus.AVAILABLE
       }
     });
