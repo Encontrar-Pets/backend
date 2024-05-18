@@ -1,35 +1,40 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { logger } from '../../services/logger';
 import { PETS } from '../../mocks';
-// import { PetsRepository } from '../../models/pets/pets-model';
-// import prisma from '../../utils/prisma';
+import { PetsRepository } from '../../models/pets/pets-model';
+import prisma from '../../utils/prisma';
 
-// const petsRepository = new PetsRepository(prisma);
+const petsRepository = new PetsRepository(prisma);
 
 export const getPetsHandler = async (
   req: FastifyRequest<{
-    Body: any;
+    Querystring: { shelter_id: string; tag_ids?: string };
   }>,
   res: FastifyReply
 ) => {
   try {
-    const shelter: string = req.query?.shelter_id;
-    var tag_ids: Array<number> | undefined = undefined;
-    if (req.query?.tag_ids) {
-      tag_ids = req.query?.tag_ids.split(',');
-    }
+    const shelter_id: string = req.query.shelter_id;
 
     // mock data section
-    // orm here to get pets from database
-    var filtered_pets = PETS.filter((el) => el.shelter_id == shelter);
-    // var filtered_pets = petsRepository.findAllByShelter(shelter);
+    // var filtered_pets = PETS.filter((el) => el.shelter_id == shelter);
+    // if (tag_ids) {
+    //   tag_ids.forEach((t) => {
+    //     filtered_pets = filtered_pets.filter((el1) => {
+    //       return el1?.pet_tag_ids.indexOf(Number(t)) >= 0;
+    //     });
+    //   });
+    // }
 
-    if (tag_ids) {
-      tag_ids.forEach((t) => {
-        filtered_pets = filtered_pets.filter((el1) => {
-          return el1?.pet_tag_ids.indexOf(Number(t)) >= 0;
-        });
-      });
+    // database data
+    var filtered_pets = [];
+    if (req.query.tag_ids) {
+      const tag_ids = req.query.tag_ids.split(',');
+      filtered_pets = await petsRepository.findAllByShelterAndTagIds(
+        shelter_id,
+        tag_ids
+      );
+    } else {
+      filtered_pets = await petsRepository.findAllByShelter(shelter_id);
     }
 
     res.code(200).send({
@@ -128,6 +133,10 @@ export const newPetHandler = async (
     // mock data section
 
     /* 
+    if status = L
+      check if owner not exists in applicant_owner -> phone field
+        insert owner_id
+      get owner_id
     insert new data in pets
     insert pet_tagas in pet_tags
     */
