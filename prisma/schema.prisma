@@ -41,7 +41,7 @@ model pets {
   id String @id @default(cuid())
   name String
   description String
-  type String
+  type String @db.VarChar(1)
   status String @db.VarChar(1)
   temp_home_id String?
   applicant_owner_id String?
