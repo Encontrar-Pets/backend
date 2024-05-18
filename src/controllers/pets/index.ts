@@ -162,7 +162,7 @@ export const newPetHandler = async (
     assert(img_url);
 
     assert(Object.values(PetType).includes(type));
-    assert(Object.values(PetStatus).includes(status));
+    assert(PetStatus.LOST == status || PetStatus.AVAILABLE == status);
 
     const pet = await petsRepository.create({
       name,
