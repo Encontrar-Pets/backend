@@ -119,7 +119,7 @@ export class PetsRepository {
             },
             data: {
                 status: PetStatus.PENDING,
-                applicant_owner_id: aplayer_id,
+                owner_id: aplayer_id,
                 updated_at: new Date()
             }
         })
