@@ -6,10 +6,14 @@ export enum PetStatus {
   TEMP_ALOCATED = 'T',
 }
 
+export enum PetType {
+  DOG = 'D',
+  CAT = 'C',
+}
 export class PetsDTO {
     name!: string;
     description!: string;
-    type!: string;
+    type!: PetType;
     id?: string;
     status?: PetStatus;
     temp_home_id?: string;
