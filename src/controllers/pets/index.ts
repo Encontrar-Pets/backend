@@ -1,26 +1,29 @@
+import assert from 'assert';
 import { FastifyReply, FastifyRequest } from 'fastify';
+
 import { logger } from '../../services/logger';
-import { PetsRepository } from '../../models/pets/pets-model';
 import prisma from '../../utils/prisma';
 
-import { PETS } from '../../mocks';
-import assert from 'assert';
+import { PetsRepository } from '../../models/pets/pets-model';
+import { PetStatus, PetType } from '../../models/pets/pets-dto';
+import { OwnerRepository } from '../../models/owner/owner-model';
 
 const petsRepository = new PetsRepository(prisma);
+const ownerRepository = new OwnerRepository(prisma);
 
 export const getPetsHandler = async (
   req: FastifyRequest<{
     Querystring: {
       shelter_id: string;
       status: string;
-      tags?: string;
+      pet_tag_ids?: string;
       type?: string;
     };
   }>,
   res: FastifyReply
 ) => {
   try {
-    const { shelter_id, status, tags, type } = req.query;
+    const { shelter_id, status, pet_tag_ids, type } = req.query;
     assert(shelter_id);
     assert(status);
 
@@ -32,7 +35,7 @@ export const getPetsHandler = async (
       shelter_id
     };
 
-    const split_tags = tags ? tags.split(',') : [];
+    const split_tags = pet_tag_ids ? pet_tag_ids.split(',') : [];
 
     filtered_pets = await petsRepository.findAllByTagsAndFilters(
       split_tags,
@@ -122,26 +125,65 @@ export const applyHomeHandler = async (
 
 export const newPetHandler = async (
   req: FastifyRequest<{
-    Body: any;
+    Body: {
+      name: string;
+      description: string;
+      type: string;
+      status: string;
+      img_url: string;
+      shelter_id: string;
+      pet_tag_ids: Array<string>;
+      owner?: {
+        phone: string;
+        name: string;
+      };
+    };
   }>,
   res: FastifyReply
 ) => {
   try {
-    const { name, description, type, image, tags, shelter_id } = req.body;
+    const {
+      name,
+      description,
+      type,
+      status,
+      img_url,
+      pet_tag_ids,
+      shelter_id,
+      owner
+    } = req.body;
 
-    logger.info({ name, description, type, image, tags, shelter_id });
-    console.log({ name, description, type, image, tags, shelter_id });
+    assert(name);
+    assert(description);
+    assert(type);
+    assert(status);
+    assert(pet_tag_ids);
+    assert(shelter_id);
+    assert(img_url);
 
-    // mock data section
+    assert(Object.values(PetType).includes(type));
+    assert(Object.values(PetStatus).includes(status));
 
-    /* 
-    if status = L
-      check if owner not exists in applicant_owner -> phone field
-        insert owner_id
-      get owner_id
-    insert new data in pets
-    insert pet_tagas in pet_tags
-    */
+    const pet = await petsRepository.create({
+      name,
+      description,
+      type,
+      status,
+      shelter_id,
+      img_url,
+      pet_tag_ids
+    });
+
+    if (status == PetStatus.LOST) {
+      assert(owner);
+      assert(owner.phone);
+      assert(owner.name);
+      var db_owner = await ownerRepository.findByPhone(owner.phone);
+      if (!db_owner) {
+        db_owner = await ownerRepository.create(owner);
+      }
+      await petsRepository.updateOwner(pet.id, db_owner.id);
+    }
 
     res.code(200).send({
       message: 'New pet created successfully',
