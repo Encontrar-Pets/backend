@@ -19,7 +19,7 @@ model temp_home {
   pets   pets[] 
 }
 
-model applicant_owner {
+model owners {
   id String @id @default(cuid())
   name String
   phone String
@@ -44,20 +44,20 @@ model pets {
   type String @db.VarChar(1)
   status String @db.VarChar(1)
   temp_home_id String?
-  applicant_owner_id String?
+  owner_id String?
   shelter_id String?
   img_url String?
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
   temp_home   temp_home? @relation(fields: [temp_home_id], references: [id])
-  applicant_owner   applicant_owner? @relation(fields: [applicant_owner_id], references: [id])
-  shelter   shelter? @relation(fields: [shelter_id], references: [id])
+  owners   owners? @relation(fields: [owner_id], references: [id])
+  shelters   shelters? @relation(fields: [shelter_id], references: [id])
 
   pet_tags pet_tags[]
 }
 
-model shelter {
+model shelters {
   id String @id @default(cuid())
   name String
   phone String
@@ -68,15 +68,4 @@ model shelter {
   updated_at DateTime @updatedAt
 
   pets pets[]
-}
-
-model pet_owner {
-  id String @id @default(cuid())
-  name String
-  phone String
-  pet_name String
-  type String
-  description String
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
 }

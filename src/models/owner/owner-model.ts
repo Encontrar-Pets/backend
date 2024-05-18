@@ -5,7 +5,7 @@ export class OwnerRepository {
     constructor(private readonly prisma: PrismaClient) { }
 
     async create(owner: OwnerDTO) {
-        return await this.prisma.applicant_owner.create({
+        return await this.prisma.owners.create({
             data: {
                 name: owner.name,
                 phone: owner.phone
@@ -14,21 +14,21 @@ export class OwnerRepository {
     }
 
     async findByName(name: string) {
-         return await this.prisma.applicant_owner.findMany({
+         return await this.prisma.owners.findMany({
             where: {
                 name: name
             }
          });       
     }
     async findByPhone(phone: string) {
-         return await this.prisma.applicant_owner.findMany({
+         return await this.prisma.owners.findMany({
             where: {
                 phone: phone
             }
          });       
     }
     async findById(id: string) {
-         return await this.prisma.applicant_owner.findUnique({
+         return await this.prisma.owners.findUnique({
             where: {
                 id: id
             }

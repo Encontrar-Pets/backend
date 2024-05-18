@@ -28,7 +28,7 @@ export class PetsRepository {
                 status: PetStatus.LOST,
                 type: pet.type,
                 img_url: pet.img_url,
-                applicant_owner_id: pet.owner_id,
+                owner_id: pet.owner_id,
                 pet_tags: {
                     connect: pet.pet_tag_ids ? pet.pet_tag_ids.map((id) => ({ id })) : [],
                 }

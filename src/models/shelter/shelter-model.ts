@@ -5,7 +5,7 @@ export class ShelterRepository {
     constructor(private readonly prisma: PrismaClient) { }
 
     async create(shelter: ShelterDTO) {
-        return await this.prisma.shelter.create({
+        return await this.prisma.shelters.create({
             data: {
                 name: shelter.name,
                 phone: shelter.phone,
@@ -17,7 +17,7 @@ export class ShelterRepository {
     }
 
     async findById(id: string) {
-        return await this.prisma.shelter.findUnique({
+        return await this.prisma.shelters.findUnique({
             select: {
                 password: false,
             },
@@ -28,7 +28,7 @@ export class ShelterRepository {
     }
 
     async login(login: string, password: string) {
-        return await this.prisma.shelter.findFirstOrThrow({
+        return await this.prisma.shelters.findFirstOrThrow({
             select: {
                 password: false,
             },
