@@ -1,10 +1,10 @@
 import { PrismaClient } from "@prisma/client";
-import { AplicantOwnerDTO } from "./applicant-owner-dto";
+import { OwnerDTO } from "./owner-dto";
 
-export class AplicantOwnerRepository {
+export class OwnerRepository {
     constructor(private readonly prisma: PrismaClient) { }
 
-    async create(aplicant: AplicantOwnerDTO) {
+    async create(aplicant: OwnerDTO) {
         return await this.prisma.applicant_owner.create({
             data: {
                 name: aplicant.name,
