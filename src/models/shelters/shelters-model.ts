@@ -10,7 +10,7 @@ const defaultSelect = {
     password: false,
 };
 
-export class ShelterRepository {
+export class SheltersRepository {
     constructor(private readonly prisma: PrismaClient) { }
 
     async create(shelter: SheltersDTO) {

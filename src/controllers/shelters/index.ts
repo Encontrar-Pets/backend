@@ -1,12 +1,12 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { logger } from '../../services/logger';
 
-import { ShelterRepository } from '../../models/shelters/shelters-model';
+import { SheltersRepository } from '../../models/shelters/shelters-model';
 import prisma from '../../utils/prisma';
 
 import { SHELTERS } from '../../mocks';
 
-const sheltersRepository = new ShelterRepository(prisma);
+const sheltersRepository = new SheltersRepository(prisma);
 
 export const getSheltersHandler = async (
   req: FastifyRequest<{
