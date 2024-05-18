@@ -1,4 +1,4 @@
-import { Adress } from "../shelter/shelter-dto";
+import { Adress } from "../shelters/shelters-dto";
 
 export class SecurityData{    
     ip?: string;

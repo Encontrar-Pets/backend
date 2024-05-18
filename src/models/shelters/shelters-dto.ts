@@ -7,7 +7,7 @@ export class Adress{
     zip_code!: string;
 }
 
-export class ShelterDTO{
+export class SheltersDTO{
     name!: string;
     phone!: string;
     address!: Adress;

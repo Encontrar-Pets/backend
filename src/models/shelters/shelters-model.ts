@@ -1,10 +1,10 @@
 import { PrismaClient } from "@prisma/client";
-import { ShelterDTO } from "./shelter-dto";
+import { SheltersDTO } from "./shelters-dto";
 
 export class ShelterRepository {
     constructor(private readonly prisma: PrismaClient) { }
 
-    async create(shelter: ShelterDTO) {
+    async create(shelter: SheltersDTO) {
         return await this.prisma.shelters.create({
             data: {
                 name: shelter.name,
@@ -14,6 +14,10 @@ export class ShelterRepository {
                 password: shelter.password,
             }
         });
+    }
+
+    async findAll() {
+        return await this.prisma.shelters.findMany();
     }
 
     async findById(id: string) {
