@@ -28,6 +28,15 @@ export class PetsRepository {
         });
     }
 
+    async findAllByShelter(shelter_id: string) {
+        return await this.prisma.pets.findMany({
+            where: {
+                shelter_id,
+                status: PetStatus.AVAILABLE
+            }
+        });
+    }
+
     async findById(id: string) {
         return await this.prisma.pets.findUnique({
             where: {

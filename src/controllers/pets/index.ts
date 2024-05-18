@@ -1,6 +1,10 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { logger } from '../../services/logger';
 import { PETS } from '../../mocks';
+// import { PetsRepository } from '../../models/pets/pets-model';
+// import prisma from '../../utils/prisma';
+
+// const petsRepository = new PetsRepository(prisma);
 
 export const getPetsHandler = async (
   req: FastifyRequest<{
@@ -9,7 +13,7 @@ export const getPetsHandler = async (
   res: FastifyReply
 ) => {
   try {
-    const shelter: number = req.query?.shelter_id;
+    const shelter: string = req.query?.shelter_id;
     var tag_ids: Array<number> | undefined = undefined;
     if (req.query?.tag_ids) {
       tag_ids = req.query?.tag_ids.split(',');
@@ -18,6 +22,7 @@ export const getPetsHandler = async (
     // mock data section
     // orm here to get pets from database
     var filtered_pets = PETS.filter((el) => el.shelter_id == shelter);
+    // var filtered_pets = petsRepository.findAllByShelter(shelter);
 
     if (tag_ids) {
       tag_ids.forEach((t) => {
