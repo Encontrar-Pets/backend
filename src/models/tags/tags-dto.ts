@@ -1,3 +1,3 @@
-export class PetTagsDto {
+export class TagsDto {
     description!: string;
 }

@@ -29,7 +29,7 @@ model owners {
   pets   pets[] 
 }
 
-model pet_tags {
+model tags {
   id String @id @default(cuid())
   description String
   created_at DateTime @default(now())
@@ -54,7 +54,7 @@ model pets {
   owners   owners? @relation(fields: [owner_id], references: [id])
   shelters   shelters? @relation(fields: [shelter_id], references: [id])
 
-  pet_tags pet_tags[]
+  tags tags[]
 }
 
 model shelters {
