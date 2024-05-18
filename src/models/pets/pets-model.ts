@@ -2,14 +2,14 @@ import { PrismaClient } from '@prisma/client';
 import { PetStatus, PetsDTO } from './pets-dto';
 
 export class PetsRepository {
-  constructor(private readonly prisma: PrismaClient) {}
+  constructor(private readonly prisma: PrismaClient) { }
 
   async create(pet: PetsDTO) {
     return await this.prisma.pets.create({
       data: {
         name: pet.name,
         description: pet.description,
-        status: PetStatus.AVAILABLE,
+        status: pet.status,
         type: pet.type,
         img_url: pet.img_url,
         shelter_id: pet.shelter_id,
@@ -76,21 +76,25 @@ export class PetsRepository {
     });
   }
 
-  async findAllByShelterAndTagsIds(
-    shelter_id: string,
-    tags_ids: Array<string>
-  ) {
-    return await this.prisma.pets.findMany({
-      where: {
-        shelter_id,
+  async findAllByTagsAndFilters(tags_ids: Array<string>, filters?: Any) {
+    const and_clause = Array();
+    for (let i of tags_ids) {
+      and_clause.push({
         tags: {
           some: {
-            id: {
-              in: tags_ids
-            }
+            id: i
           }
-        },
-        status: PetStatus.AVAILABLE
+        }
+      });
+    }
+    return await this.prisma.pets.findMany({
+      where: {
+        ...filters,
+        AND: and_clause
+      },
+      include: {
+        shelters: true,
+        tags: true
       }
     });
   }
@@ -99,6 +103,10 @@ export class PetsRepository {
     return await this.prisma.pets.findUnique({
       where: {
         id
+      },
+      include: {
+        shelters: true,
+        tags: true
       }
     });
   }
@@ -115,14 +123,13 @@ export class PetsRepository {
     });
   }
 
-  async addAplicant(id: string, aplayer_id: string) {
+  async updateOwner(id: string, owner_id: string) {
     return await this.prisma.pets.update({
       where: {
         id
       },
       data: {
-        status: PetStatus.PENDING,
-        owner_id: aplayer_id,
+        owner_id: owner_id,
         updated_at: new Date()
       }
     });

@@ -1,42 +1,46 @@
+import assert from 'assert';
 import { FastifyReply, FastifyRequest } from 'fastify';
+
 import { logger } from '../../services/logger';
-import { PetsRepository } from '../../models/pets/pets-model';
 import prisma from '../../utils/prisma';
 
-import { PETS } from '../../mocks';
+import { PetsRepository } from '../../models/pets/pets-model';
+import { PetStatus, PetType } from '../../models/pets/pets-dto';
+import { OwnerRepository } from '../../models/owner/owner-model';
 
 const petsRepository = new PetsRepository(prisma);
+const ownerRepository = new OwnerRepository(prisma);
 
 export const getPetsHandler = async (
   req: FastifyRequest<{
-    Querystring: { shelter_id: string; tags_ids?: string };
+    Querystring: {
+      shelter_id: string;
+      status: string;
+      pet_tag_ids?: string;
+      type?: string;
+    };
   }>,
   res: FastifyReply
 ) => {
   try {
-    const shelter_id: string = req.query.shelter_id;
+    const { shelter_id, status, pet_tag_ids, type } = req.query;
+    assert(shelter_id);
+    assert(status);
 
-    // mock data section
-    // var filtered_pets = PETS.filter((el) => el.shelter_id == shelter);
-    // if (tag_ids) {
-    //   tag_ids.forEach((t) => {
-    //     filtered_pets = filtered_pets.filter((el1) => {
-    //       return el1?.pet_tag_ids.indexOf(Number(t)) >= 0;
-    //     });
-    //   });
-    // }
-
-    // database data
     var filtered_pets = [];
-    if (req.query.tags_ids) {
-      const tags_ids = req.query.tags_ids.split(',');
-      filtered_pets = await petsRepository.findAllByShelterAndTagsIds(
-        shelter_id,
-        tags_ids
-      );
-    } else {
-      filtered_pets = await petsRepository.findAllByShelter(shelter_id);
-    }
+
+    const filters = {
+      type,
+      status,
+      shelter_id
+    };
+
+    const split_tags = pet_tag_ids ? pet_tag_ids.split(',') : [];
+
+    filtered_pets = await petsRepository.findAllByTagsAndFilters(
+      split_tags,
+      filters
+    );
 
     res.code(200).send({
       message: 'Pets fetched successfully',
@@ -121,30 +125,100 @@ export const applyHomeHandler = async (
 
 export const newPetHandler = async (
   req: FastifyRequest<{
-    Body: any;
+    Body: {
+      name: string;
+      description: string;
+      type: string;
+      status: string;
+      img_url: string;
+      shelter_id: string;
+      pet_tag_ids: Array<string>;
+      owner?: {
+        phone: string;
+        name: string;
+      };
+    };
   }>,
   res: FastifyReply
 ) => {
   try {
-    const { name, description, type, image, tags_ids, shelter_id } = req.body;
+    const {
+      name,
+      description,
+      type,
+      status,
+      img_url,
+      pet_tag_ids,
+      shelter_id,
+      owner
+    } = req.body;
 
-    logger.info({ name, description, type, image, tags_ids, shelter_id });
-    console.log({ name, description, type, image, tags_ids, shelter_id });
+    assert(name);
+    assert(description);
+    assert(type);
+    assert(status);
+    assert(pet_tag_ids);
+    assert(shelter_id);
+    assert(img_url);
 
-    // mock data section
+    assert(Object.values(PetType).includes(type));
+    assert(PetStatus.LOST == status || PetStatus.AVAILABLE == status);
 
-    /* 
-    if status = L
-      check if owner not exists in applicant_owner -> phone field
-        insert owner_id
-      get owner_id
-    insert new data in pets
-    insert pet_tagas in pet_tags
-    */
+    const pet = await petsRepository.create({
+      name,
+      description,
+      type,
+      status,
+      shelter_id,
+      img_url,
+      pet_tag_ids
+    });
+
+    if (status == PetStatus.LOST) {
+      assert(owner);
+      assert(owner.phone);
+      assert(owner.name);
+      var db_owner = await ownerRepository.findByPhone(owner.phone);
+      if (!db_owner) {
+        db_owner = await ownerRepository.create(owner);
+      }
+      await petsRepository.updateOwner(pet.id, db_owner.id);
+    }
 
     res.code(200).send({
       message: 'New pet created successfully',
       data: {}
+    });
+  } catch (err) {
+    logger.error(err);
+    res.code(500).send({
+      message: 'Internal Server Error'
+    });
+  }
+};
+
+export const getByIdHandler = async (
+  req: FastifyRequest<{
+    Querystring: {
+      _id: string;
+    };
+  }>,
+  res: FastifyReply
+) => {
+  try {
+
+    const { _id } = req.query;
+    assert(_id);
+
+    const result = await petsRepository.findById(_id);
+    if (!result) {
+      return res.code(404).send({
+        message: 'Pet not found'
+      });
+    }
+    res.code(200).send({
+      message: 'Pet fetched successfully',
+      data: result
     });
   } catch (err) {
     logger.error(err);

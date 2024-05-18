@@ -1,8 +1,9 @@
 export enum PetStatus {
-  AVAILABLE = 'A',
-  PENDING = 'P',
-  RECOVERED = 'R',
   LOST = 'L',
+  AVAILABLE = 'A',
+  PENDING_RECOVERED = 'P',
+  RECOVERED = 'R',
+  PENDING_TEMP_ALOCATED = 'X',
   TEMP_ALOCATED = 'T'
 }
 

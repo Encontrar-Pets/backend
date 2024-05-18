@@ -1,11 +1,10 @@
 import { FastifyInstance } from 'fastify';
-
-import { applyHomeHandler } from '../../../controllers/pets';
+import { getByIdHandler } from '../../../controllers/pets';
 
 module.exports = async function (fastify: FastifyInstance) {
   fastify.route({
-    method: 'POST',
+    method: 'GET',
     url: '/',
-    handler: applyHomeHandler
+    handler: getByIdHandler
   });
 };
