@@ -76,25 +76,21 @@ export class PetsRepository {
     });
   }
 
-  async findAllByShelterAndTagsIds(
-    shelter_id: string,
-    tags_ids: Array<string>
-  ) {
+  async findAllByTagsAndFilters(tags_ids: Array<string>, filters?: Any) {
     const and_clause = Array();
-    for (let i of tags_ids){
+    for (let i of tags_ids) {
       and_clause.push({
         tags: {
-          some:{
+          some: {
             id: i
           }
         }
-      })
+      });
     }
     return await this.prisma.pets.findMany({
       where: {
-        shelter_id,
-        AND: and_clause,
-        status: PetStatus.AVAILABLE
+        ...filters,
+        AND: and_clause
       }
     });
   }

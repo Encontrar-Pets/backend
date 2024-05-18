@@ -4,39 +4,40 @@ import { PetsRepository } from '../../models/pets/pets-model';
 import prisma from '../../utils/prisma';
 
 import { PETS } from '../../mocks';
+import assert from 'assert';
 
 const petsRepository = new PetsRepository(prisma);
 
 export const getPetsHandler = async (
   req: FastifyRequest<{
-    Querystring: { shelter_id: string; tags?: string };
+    Querystring: {
+      shelter_id: string;
+      status: string;
+      tags?: string;
+      type?: string;
+    };
   }>,
   res: FastifyReply
 ) => {
   try {
-    const shelter_id: string = req.query.shelter_id;
+    const { shelter_id, status, tags, type } = req.query;
+    assert(shelter_id);
+    assert(status);
 
-    // mock data section
-    // var filtered_pets = PETS.filter((el) => el.shelter_id == shelter);
-    // if (tag_ids) {
-    //   tag_ids.forEach((t) => {
-    //     filtered_pets = filtered_pets.filter((el1) => {
-    //       return el1?.pet_tag_ids.indexOf(Number(t)) >= 0;
-    //     });
-    //   });
-    // }
-
-    // database data
     var filtered_pets = [];
-    if (req.query.tags) {
-      const tags = req.query.tags.split(',');
-      filtered_pets = await petsRepository.findAllByShelterAndTagsIds(
-        shelter_id,
-        tags
-      );
-    } else {
-      filtered_pets = await petsRepository.findAllByShelter(shelter_id);
-    }
+
+    const filters = {
+      type,
+      status,
+      shelter_id
+    };
+
+    const split_tags = tags ? tags.split(',') : [];
+
+    filtered_pets = await petsRepository.findAllByTagsAndFilters(
+      split_tags,
+      filters
+    );
 
     res.code(200).send({
       message: 'Pets fetched successfully',
