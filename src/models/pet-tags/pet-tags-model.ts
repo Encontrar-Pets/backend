@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { PetTagsDto } from "./pet-tags-dto";
 
-export class PetsRepository {
+export class PetTagsRepository {
     constructor(private readonly prisma: PrismaClient) { }
 
     async create(tag: PetTagsDto) {
