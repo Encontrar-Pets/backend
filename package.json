@@ -1,38 +1,43 @@
 {
-    "name": "backend",
-    "version": "1.0.0",
-    "main": "index.js",
-    "keywords": [],
-    "author": "",
-    "license": "ISC",
-    "dependencies": {
-        "@fastify/autoload": "^5.8.2",
-        "@fastify/cors": "^9.0.1",
-        "@fastify/helmet": "^11.1.1",
-        "@prisma/client": "^5.14.0",
-        "dotenv": "^16.4.5",
-        "express": "^4.19.2",
-        "fastify": "^4.27.0",
-        "fastify-cors": "^6.1.0",
-        "pino-pretty": "^11.0.0",
-        "winston": "^3.13.0"
-    },
-    "description": "",
-    "devDependencies": {
-        "@types/node": "^20.12.12",
-        "nodemon": "^3.1.0",
-        "prettier": "^3.2.5",
-        "ts-node": "^10.9.2",
-        "tsconfig-paths": "^4.2.0",
-        "typescript": "^5.4.5"
-    },
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1",
-        "build": "tsc -p tsconfig.json",
-        "start": "npm run build && node build/server.js",
-        "create-db": "docker-compose up -d && npx prisma migrate dev --name init",
-        "go": "tsc -p tsconfig.json && node src/index.js",
-        "dev": "nodemon src/server.ts",
-        "build-dev": "tsc -p tsconfig.json && nodemon src/server.ts"
-    }
+  "name": "backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@fastify/autoload": "^5.8.2",
+    "@fastify/cors": "^9.0.1",
+    "@fastify/helmet": "^11.1.1",
+    "@prisma/client": "^5.14.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "fastify": "^4.27.0",
+    "fastify-cors": "^6.1.0",
+    "pino-pretty": "^11.0.0",
+    "winston": "^3.13.0"
+  },
+  "description": "",
+  "devDependencies": {
+    "@types/node": "^20.12.12",
+    "nodemon": "^3.1.0",
+    "prettier": "^3.2.5",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.4.5"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc -p tsconfig.json",
+    "start": "npm run build && node build/server.js",
+    "create-db": "docker-compose up -d && npx prisma migrate dev --name init",
+    "seed-db": "npx prisma db seed",
+    "up-db": "docker-compose up -d",
+    "go": "tsc -p tsconfig.json && node src/index.js",
+    "dev": "nodemon src/server.ts",
+    "build-dev": "tsc -p tsconfig.json && nodemon src/server.ts"
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
+  }
 }
