@@ -7,9 +7,11 @@ import prisma from '../../utils/prisma';
 import { PetsRepository } from '../../models/pets/pets-model';
 import { PetStatus, PetType } from '../../models/pets/pets-dto';
 import { OwnerRepository } from '../../models/owner/owner-model';
+import { TagsRepository } from '../../models/tags/tags-model';
 
 const petsRepository = new PetsRepository(prisma);
 const ownerRepository = new OwnerRepository(prisma);
+const tagsRepository = new TagsRepository(prisma);
 
 export const getPetsHandler = async (
   req: FastifyRequest<{
@@ -123,7 +125,7 @@ export const applyHomeHandler = async (
   }
 };
 
-export const newPetHandler = async (
+export const newPetHandler = async (  
   req: FastifyRequest<{
     Body: {
       name: string;
@@ -131,12 +133,13 @@ export const newPetHandler = async (
       type: string;
       status: string;
       img_url: string;
-      shelter_id: string;
       pet_tag_ids: Array<string>;
+      shelter_id?: string;
       owner?: {
         phone: string;
         name: string;
       };
+      new_pet_tag?: Array<string>;
     };
   }>,
   res: FastifyReply
@@ -150,7 +153,8 @@ export const newPetHandler = async (
       img_url,
       pet_tag_ids,
       shelter_id,
-      owner
+      owner,
+      new_pet_tag
     } = req.body;
 
     assert(name);
@@ -158,11 +162,21 @@ export const newPetHandler = async (
     assert(type);
     assert(status);
     assert(pet_tag_ids);
-    assert(shelter_id);
     assert(img_url);
-
+    
     assert(Object.values(PetType).includes(type));
     assert(PetStatus.LOST == status || PetStatus.AVAILABLE == status);
+    
+    if (status !== PetStatus.LOST){
+      assert(shelter_id);
+    }
+
+    if (new_pet_tag) {
+      for (const tag of new_pet_tag) {
+        let _tag_id = await tagsRepository.create({description:tag});
+        pet_tag_ids.push(_tag_id.id);
+      }
+    }
 
     const pet = await petsRepository.create({
       name,
