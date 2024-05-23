@@ -155,4 +155,24 @@ export class PetsRepository {
       }
     });
   }
+
+  async update(id: string, pet: Partial<PetsDTO>) {
+    const updateData: any = {};
+    if (pet.name !== undefined) updateData.name = pet.name;
+    if (pet.description !== undefined) updateData.description = pet.description;
+    if (pet.status !== undefined) updateData.status = pet.status;
+    if (pet.type !== undefined) updateData.type = pet.type;
+    if (pet.img_url !== undefined) updateData.img_url = pet.img_url;
+    if (pet.shelter_id !== undefined) updateData.shelter_id = pet.shelter_id;
+    if (pet.pet_tag_ids !== undefined) {
+      updateData.tags = {
+        connect: pet.pet_tag_ids.map((id) => ({ id })),
+      };
+    }
+
+    return await this.prisma.pets.update({
+      where: { id },
+      data: updateData,
+    });
+  }
 }

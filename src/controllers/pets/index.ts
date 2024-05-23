@@ -125,7 +125,7 @@ export const applyHomeHandler = async (
   }
 };
 
-export const newPetHandler = async (  
+export const newPetHandler = async (
   req: FastifyRequest<{
     Body: {
       name: string;
@@ -163,17 +163,17 @@ export const newPetHandler = async (
     assert(status);
     assert(pet_tag_ids);
     assert(img_url);
-    
+
     assert(Object.values(PetType).includes(type));
     assert(PetStatus.LOST == status || PetStatus.AVAILABLE == status);
-    
-    if (status !== PetStatus.LOST){
+
+    if (status !== PetStatus.LOST) {
       assert(shelter_id);
     }
 
     if (new_pet_tag) {
       for (const tag of new_pet_tag) {
-        let _tag_id = await tagsRepository.create({description:tag});
+        let _tag_id = await tagsRepository.create({ description: tag });
         pet_tag_ids.push(_tag_id.id);
       }
     }
@@ -238,6 +238,92 @@ export const getByIdHandler = async (
     logger.error(err);
     res.code(500).send({
       message: 'Internal Server Error'
+    });
+  }
+};
+
+export const updatePetHandler = async (
+  req: FastifyRequest<{
+    Params: { id: string };
+    Body: Partial<{
+      name: string;
+      description: string;
+      type: PetType;
+      status: PetStatus;
+      img_url: string;
+      pet_tag_ids: Array<string>;
+      shelter_id?: string;
+      owner?: {
+        phone: string;
+        name: string;
+      };
+      new_pet_tag?: Array<string>;
+    }>;
+  }>,
+  res: FastifyReply
+) => {
+  try {
+    const { id } = req.params;
+    const {
+      name,
+      description,
+      type,
+      status,
+      img_url,
+      pet_tag_ids,
+      shelter_id,
+      owner,
+      new_pet_tag,
+    } = req.body;
+
+    const existingPet = await petsRepository.findById(id);
+    if (!existingPet) {
+      return res.code(404).send({ message: 'Pet not found' });
+    }
+
+    if (new_pet_tag) {
+      for (const tag of new_pet_tag) {
+        let _tag_id = await tagsRepository.create({ description: tag });
+        pet_tag_ids?.push(_tag_id.id);
+      }
+    }
+
+    const updatedPet = {
+      name: name ?? existingPet.name,
+      description: description ?? existingPet.description,
+      type: type ?? existingPet.type,
+      status: status ?? existingPet.status,
+      img_url: img_url ?? existingPet.img_url,
+      pet_tag_ids: pet_tag_ids ?? existingPet.tags.map(tag => tag.id),
+      shelter_id: shelter_id ?? existingPet.shelter_id,
+    };
+
+    if (type) {
+      assert(Object.values(PetType).includes(type));
+    }
+    if (status !== undefined) {
+      assert(Object.values(PetStatus).includes(status));
+    }
+    await petsRepository.update(id, updatedPet);
+    if (status === PetStatus.LOST && owner) {
+      assert(owner.phone);
+      assert(owner.name);
+
+      let db_owner = await ownerRepository.findByPhone(owner.phone);
+      if (!db_owner) {
+        db_owner = await ownerRepository.create(owner);
+      }
+      await petsRepository.updateOwner(id, db_owner.id);
+    }
+
+    res.code(200).send({
+      message: 'Pet updated successfully',
+      data: updatedPet,
+    });
+  } catch (err) {
+    console.error(err);
+    res.code(500).send({
+      message: 'Internal Server Error',
     });
   }
 };
