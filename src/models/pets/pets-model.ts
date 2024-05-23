@@ -87,13 +87,21 @@ export class PetsRepository {
         }
       });
     }
+    //TODO ao retornar os shelters neste relacionamento não posso retornar login e password
     return await this.prisma.pets.findMany({
       where: {
         ...filters,
         AND: and_clause
       },
       include: {
-        shelters: true,
+        shelters: {
+          select: {
+            id: true,
+            name: true,
+            address: true,
+            phone: true
+          }
+        },
         tags: true
       }
     });
